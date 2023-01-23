@@ -58,3 +58,30 @@ $python make_figures_poet.py {experiment name}
 | --not-overwrite     |         | *false* | skip process if already figure exists |
 | --no-multi          |         | *false* | do without using multiprocessing. if error occur, try this option. |
 
+
+# PPO
+
+
+## Evogym
+
+after run poet, validate pros of poet by running ppo algorithm on the only one environment.
+### execution
+```
+$python run_evogym_ppo.py {experiment name} {niche key}
+```
+#### options:
+| option                | abbrev  | default         | detail  |
+| :---                  | :---:   | :---:           | :---    |
+|                       |         |                 | experiment name of poet |
+|                       |         |                 | target niche key |
+| --num                 | -n      | 5               | how many times to run PPO |
+| --num-processes       | -p      | 4               | how many training CPU processes to use |
+| --steps               | -s      | 256             | num steps to use in PPO |
+| --num-mini-batch      | -b      | 4               | number of batches for ppo |
+| --epochs              | -e      | 4               | number of ppo epochs |
+| --train-iters         | -i      | 2500            | learning iterations of PPO |
+| --evaluation-interval | -ei     | 25              | frequency to evaluate policy |
+| --lerning-rate        | -lr     | 2.5e-4          | learning rate |
+| --gamma               |         | 0.99            | discount factor for rewards |
+| --clip-range          | -c      | 0.1             | ppo clip parameter |
+| --init-log-std        | -std    | 0.0             | initial log std of action distribution |
