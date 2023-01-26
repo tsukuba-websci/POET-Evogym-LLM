@@ -85,3 +85,25 @@ $python run_evogym_ppo.py {experiment name} {niche key}
 | --gamma               |         | 0.99            | discount factor for rewards |
 | --clip-range          | -c      | 0.1             | ppo clip parameter |
 | --init-log-std        | -std    | 0.0             | initial log std of action distribution |
+
+### make figure
+after run_evogym_ppo, make {gif, jpg} file for each of niche.
+output to "./out/evogym_ppo/{expt name}/niche/{niche_key}/ppo_result/figure/{gif, jpg}/"
+```
+$python make_figures_ppo.py {experiment name} {niche key}
+```
+#### options:
+| option              | abbrev  | default | detail  |
+| :---                | :---:   | :---:   | :---    |
+|                     |         |         | name of experiment for making figures |
+|                     |         |         | target niche key |
+| --save-type         | -st     | gif     | file type (choose from [gif, jpg])
+| --resolution-ratio  | -r      | 0.2     | gif resolution ratio (0.2 -> (256,144)) |
+| --interval          | -i      | timestep| in case of save type is jpg, type of interval for robot drawing <br>(choose from [timestep, distance, hybrid]) |
+| --resolution-scale  | -rs     | 32.0    | jpg resolution scale <br> when output monochrome image, try this argument change. |
+| --timestep-interval | -ti     | 80      | timestep interval for robot drawing <br>(if interval is hybrid, it should be about 40) |
+| --distance-interval | -di     | 0.8     | distance interval for robot drawing |
+| --display-timestep  |         | *false* | display timestep above robot |
+| --num-cores         | -c      | 1       | number of parallel making processes |
+| --not-overwrite     |         | *false* | skip process if already figure exists |
+| --no-multi          |         | *false* | do without using multiprocessing. if error occur, try this option. |

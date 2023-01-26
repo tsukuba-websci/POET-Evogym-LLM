@@ -85,12 +85,12 @@ def get_figure_args():
     parser.add_argument(
         'name',
         type=str,
-        help='name of experiment for making figures'
+        help='name of POET experiment'
     )
     parser.add_argument(
-        '-s', '--specified',
+        'key',
         type=int,
-        help='input iter, make figure for the only specified controller (usage: "-s {iter}")'
+        help='niche key'
     )
 
     parser.add_argument(

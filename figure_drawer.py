@@ -188,48 +188,6 @@ def make_jpg(filename, env, viewer, controller, controller_type, padding, interv
     return
 
 
-class EvogymControllerDrawerNEAT:
-    def __init__(self, save_path, env_id, robot, genome_config, decode_function, overwrite=True, save_type='gif', **draw_kwargs):
-        assert save_type in ['gif', 'jpg']
-
-        self.save_path = os.path.join(save_path, save_type)
-        self.env_id = env_id
-        self.robot = robot
-        self.genome_config = genome_config
-        self.decode_function = decode_function
-        self.overwrite = overwrite
-        self.save_type = save_type
-        self.draw_kwargs = draw_kwargs
-
-        os.makedirs(self.save_path, exist_ok=True)
-
-    def draw(self, key, genome_file, directory=''):
-        save_dir = os.path.join(self.save_path, directory)
-        os.makedirs(save_dir, exist_ok=True)
-
-        filename = os.path.join(save_dir, f'{key}.{self.save_type}')
-        if not self.overwrite and os.path.exists(filename):
-            return
-
-        env = make_vec_envs(self.env_id, self.robot, 0, 1, allow_early_resets=False)
-        viewer = env.get_attr("default_viewer", indices=None)[0]
-
-        with open(genome_file, 'rb') as f:
-            genome = pickle.load(f)
-        controller = self.decode_function(genome, self.genome_config)
-
-        if self.save_type=='gif':
-            make_gif(filename, env, viewer, controller, 'NEAT', **self.draw_kwargs)
-
-        elif self.save_type=='jpg':
-            padding = RenderPaddings[self.env_id]
-            make_jpg(filename, env, viewer, controller, 'NEAT', padding, **self.draw_kwargs)
-
-        env.close()
-        print(f'genome {key} ... done')
-        return
-
-
 class EvogymControllerDrawerPPO:
     def __init__(self, save_path, env_id, robot, overwrite=True, save_type='gif', **draw_kwargs):
         assert save_type in ['gif', 'jpg']
@@ -243,15 +201,17 @@ class EvogymControllerDrawerPPO:
 
         os.makedirs(self.save_path, exist_ok=True)
 
-    def draw(self, iter, ppo_file, directory=''):
+    def draw(self, trial, terrain_file, ppo_file, directory=''):
         save_dir = os.path.join(self.save_path, directory)
         os.makedirs(save_dir, exist_ok=True)
 
-        filename = os.path.join(save_dir, f'{iter}.{self.save_type}')
+        filename = os.path.join(save_dir, f'{trial}.{self.save_type}')
         if not self.overwrite and os.path.exists(filename):
             return
 
-        env = make_vec_envs(self.env_id, self.robot, 0, 1, allow_early_resets=False, vecnormalize=True)
+        terrain = json.load(open(terrain_file, 'r'))
+        env_kwargs = dict(**self.robot, terrain=terrain)
+        env = make_vec_envs(self.env_id, env_kwargs, 0, 1, allow_early_resets=False, vecnormalize=True)
         viewer = env.get_attr("default_viewer", indices=None)[0]
 
 
@@ -270,51 +230,7 @@ class EvogymControllerDrawerPPO:
             make_jpg(filename, env, viewer, controller, 'PPO', padding, **self.draw_kwargs)
 
         env.close()
-        print(f'iter {iter} ... done')
-        return
-
-
-class EvogymStructureDrawerCPPN:
-    def __init__(self, save_path, env_id, overwrite=True, save_type='gif', **draw_kwargs):
-        assert save_type in ['gif', 'jpg']
-
-        self.save_path = os.path.join(save_path, save_type)
-        self.env_id = env_id
-        self.overwrite = overwrite
-        self.save_type = save_type
-        self.draw_kwargs = draw_kwargs
-
-        os.makedirs(self.save_path, exist_ok=True)
-
-    def draw(self, key, robot_file, ppo_file, directory=''):
-        save_dir = os.path.join(self.save_path, directory)
-        os.makedirs(save_dir, exist_ok=True)
-
-        filename = os.path.join(save_dir, f'{key}.{self.save_type}')
-        if not self.overwrite and os.path.exists(filename):
-            return
-
-        robot = np.load(robot_file)
-
-        env = make_vec_envs(self.env_id, robot, 0, 1, allow_early_resets=False, vecnormalize=True)
-        viewer = env.get_attr("default_viewer", indices=None)[0]
-
-        controller = Policy(env.observation_space, env.action_space, device='cpu')
-        params, obs_rms = torch.load(ppo_file)
-        controller.load_state_dict(params)
-
-        env.training = False
-        env.obs_rms = obs_rms
-
-        if self.save_type=='gif':
-            make_gif(filename, env, viewer, controller, 'PPO', **self.draw_kwargs)
-
-        elif self.save_type=='jpg':
-            padding = RenderPaddings[self.env_id]
-            make_jpg(filename, env, viewer, controller, 'PPO', padding, **self.draw_kwargs)
-
-        env.close()
-        print(f'genome {key} ... done')
+        print(f'trial {trial} ... done')
         return
 
 
