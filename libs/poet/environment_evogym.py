@@ -6,6 +6,7 @@ import json
 import pickle
 import numpy as np
 
+
 import matplotlib.pyplot as plt
 
 import neat_cppn
@@ -328,7 +329,7 @@ class EnvironmentEvogym: # CPPNの環境をLLMでの関数に置き換える。
         key = config.get_new_env_key()
         #child_cppn = config.reproduce_cppn_genome(self.cppn_genome)
         #child_params = config.reproduce_terrain_params(self.terrain_params)
-        child_LLM = LLM_gen() # LLMの環境を受け取る。
+        child_LLM = './LLM_envs/terrain(1).json'# LLMの環境を受け取る。
         child = EnvironmentEvogym(key, child_LLM)
         #child.make_terrain(config.decode_cppn, config.neat_config.genome_config)
         child.make_terrain_LLM(child_LLM)
@@ -359,15 +360,16 @@ class EnvrionmentEvogymConfig:
 
     def make_init(self):
         cppn_key = self.get_new_env_key()
-        cppn_genome = self.neat_config.genome_type(cppn_key)
-        cppn_genome.configure_new(self.neat_config.genome_config)
+        #cppn_genome = self.neat_config.genome_type(cppn_key)
+        #cppn_genome.configure_new(self.neat_config.genome_config)
 
         params_key = next(self.params_indexer)
         terrain_params = TerrainParams(params_key)
+        LLM_env = './LLM_envs/terrain(1).json'# LLMの環境を受け取る。
 
         env_key = next(self.env_indexer)
-        environment = EnvironmentEvogym(env_key, cppn_genome, terrain_params)
-        environment.make_terrain(self.decode_cppn, self.neat_config.genome_config)
+        environment = EnvironmentEvogym(env_key, LLM_env)
+        #environment.make_terrain(self.decode_cppn, self.neat_config.genome_config)
         return environment
 
     def reproduce_cppn_genome(self, genome):
