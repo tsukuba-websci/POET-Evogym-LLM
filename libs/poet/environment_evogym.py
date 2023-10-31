@@ -6,7 +6,6 @@ import json
 import pickle
 import numpy as np
 
-
 import matplotlib.pyplot as plt
 
 import neat_cppn
@@ -249,26 +248,17 @@ class TerrainParams:
             json.dump(params, f)
 
 
-class EnvironmentEvogym: # CPPNの環境をLLMでの関数に置き換える。
-    def __init__(self, key, LLM_env):
+class EnvironmentEvogym:
+    def __init__(self, key, cppn_genome, terrain_params):
         self.key = key
-        #self.cppn_genome = cppn_genome
-        #self.terrain_params = terrain_params
+        self.cppn_genome = cppn_genome
+        self.terrain_params = terrain_params
         self.terrain = None
-        self.LLM_env = LLM_env # LLMの環境を受け取る。
 
-    def make_terrain(self, decode_function, genome_config):# 生成した環境をEvogym用に変換する(LLMでは関数でここまで行うので不要)
+    def make_terrain(self, decode_function, genome_config):
         terrain = decode_function(self.cppn_genome, genome_config, self.terrain_params)
         self.terrain = terrain
         for platform in terrain['objects'].values():
-            indices = platform['indices']
-            for i,nei in platform['neighbors'].items():
-                for n in nei:
-                    assert n in indices, f'{i}: n'
-    
-    def make_terrain_LLM(self, env):# LLMの環境をEvogym用に変換する。
-        self.terrain = env
-        for platform in env['objects'].values():
             indices = platform['indices']
             for i,nei in platform['neighbors'].items():
                 for n in nei:
@@ -294,7 +284,7 @@ class EnvironmentEvogym: # CPPNの環境をLLMでの関数に置き換える。
         terrain_figure = os.path.join(path, 'terrain.jpg')
         self.save_terrain_figure(terrain_figure)
 
-    def save_terrain_figure(self, filename):# 環境の画像を保存する。
+    def save_terrain_figure(self, filename):
         width, height = self.terrain['grid_width'], self.terrain['grid_height']+5
         fig, ax = plt.subplots(figsize=(width/8, height/8))
         for platform in self.terrain['objects'].values():
@@ -314,7 +304,7 @@ class EnvironmentEvogym: # CPPNの環境をLLMでの関数に置き換える。
         plt.savefig(filename, bbox_inches='tight')
         plt.close()
 
-    def get_env_info(self, config):# 環境の情報を取得する。
+    def get_env_info(self, config):
 
         env_kwargs = dict(**config.robot, terrain=self.terrain)
 
@@ -325,14 +315,12 @@ class EnvironmentEvogym: # CPPNの環境をLLMでの関数に置き換える。
         }
         return make_env_kwargs
 
-    def reproduce(self, config):#環境の再生成を行う。
+    def reproduce(self, config):
         key = config.get_new_env_key()
-        #child_cppn = config.reproduce_cppn_genome(self.cppn_genome)
-        #child_params = config.reproduce_terrain_params(self.terrain_params)
-        child_LLM = './LLM_envs/terrain(1).json'# LLMの環境を受け取る。
-        child = EnvironmentEvogym(key, child_LLM)
-        #child.make_terrain(config.decode_cppn, config.neat_config.genome_config)
-        child.make_terrain_LLM(child_LLM)
+        child_cppn = config.reproduce_cppn_genome(self.cppn_genome)
+        child_params = config.reproduce_terrain_params(self.terrain_params)
+        child = EnvironmentEvogym(key, child_cppn, child_params)
+        child.make_terrain(config.decode_cppn, config.neat_config.genome_config)
         return child
 
 
@@ -360,16 +348,15 @@ class EnvrionmentEvogymConfig:
 
     def make_init(self):
         cppn_key = self.get_new_env_key()
-        #cppn_genome = self.neat_config.genome_type(cppn_key)
-        #cppn_genome.configure_new(self.neat_config.genome_config)
+        cppn_genome = self.neat_config.genome_type(cppn_key)
+        cppn_genome.configure_new(self.neat_config.genome_config)
 
         params_key = next(self.params_indexer)
         terrain_params = TerrainParams(params_key)
-        LLM_env = './LLM_envs/terrain(1).json'# LLMの環境を受け取る。
 
         env_key = next(self.env_indexer)
-        environment = EnvironmentEvogym(env_key, LLM_env)
-        #environment.make_terrain(self.decode_cppn, self.neat_config.genome_config)
+        environment = EnvironmentEvogym(env_key, cppn_genome, terrain_params)
+        environment.make_terrain(self.decode_cppn, self.neat_config.genome_config)
         return environment
 
     def reproduce_cppn_genome(self, genome):
