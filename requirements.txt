@@ -8,7 +8,6 @@ cloudpickle==1.6.0
 cycler==0.12.1
 Cython==3.0.4
 decorator==5.1.1
-evogym==1.0.0
 fonttools==4.43.1
 frozenlist==1.4.0
 glfw==2.5.0
