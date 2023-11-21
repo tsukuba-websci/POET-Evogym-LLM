@@ -1,4 +1,4 @@
-#environment_evogym_LLM.pyをimportして使う
+#this program is used to run poet on LLM envs
 
 import sys
 import os
