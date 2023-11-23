@@ -28,6 +28,7 @@ class Niche:
 
     def set_environment(self, environment):
         self.environment = environment
+        self.prompt = environment.prompt
 
     def set_optimizer(self, optimizer):
         self.optimizer = optimizer
