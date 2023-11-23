@@ -319,7 +319,7 @@ class POET:
         print()
     
     def save_prompt(self,key , prompt):
-        with open(os.path.join(self.save_path, 'prompt.txt'), 'w') as f:
+        with open(os.path.join(self.save_path, 'prompt.txt'), 'a') as f:
             f.write(str(key) + " : " + prompt + "\n")
         
     def update_niche_status(self):

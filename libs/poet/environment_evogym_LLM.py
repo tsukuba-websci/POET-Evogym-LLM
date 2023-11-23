@@ -18,8 +18,6 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 class EnvironmentEvogym: # class for the environment
     def __init__(self, key, LLM_env, prompt):
         self.key = key
-        #self.cppn_genome = cppn_genome
-        #self.terrain_params = terrain_params
         self.terrain = None
         self.prompt = prompt
         self.LLM_env = LLM_env # get the environment from LLM
@@ -120,8 +118,8 @@ class EnvrionmentEvogymConfig:
         self.prompt = prompt
         self.neat_config = neat_config
         self.env_indexer = count(0)
-        self.cppn_indexer = count(0)
-        self.params_indexer = count(0)
+        #self.cppn_indexer = count(0)
+        #self.params_indexer = count(0)
         #decoder = EvogymTerrainDecoder(max_width, first_platform=first_platform)
         #self.decode_cppn = decoder.decode
         self.decode_cppn = LLM_env
@@ -130,12 +128,8 @@ class EnvrionmentEvogymConfig:
         return next(self.env_indexer)
 
     def make_init(self):
-        #cppn_key = self.get_new_env_key()
-        #cppn_genome = self.neat_config.genome_type(cppn_key)
-        #cppn_genome.configure_new(self.neat_config.genome_config)
         env_key = next(self.env_indexer)
         environment = EnvironmentEvogym(env_key, self.decode_cppn, self.prompt)
-        #environment.make_terrain(self.decode_cppn, self.neat_config.genome_config)
         environment.make_terrain_LLM(self.decode_cppn)
         return environment
     
