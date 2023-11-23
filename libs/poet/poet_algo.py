@@ -309,6 +309,7 @@ class POET:
             if self.pass_mc(child_niche):
                 print('     yes')
                 self.add_niche(niche_key, child_niche)
+                self.save_prompt(niche_key,child_niche.prompt)
                 admitted += 1
                 if admitted >= self.admit_child_num:
                     break
@@ -316,6 +317,10 @@ class POET:
                 print('      no')
 
         print()
+    
+    def save_prompt(self,key , prompt):
+        with open(os.path.join(self.save_path, 'prompt.txt'), 'a') as f:
+            f.write(key + " : " + prompt + "\n")
         
     def update_niche_status(self):
         keys = self.niches.keys()
