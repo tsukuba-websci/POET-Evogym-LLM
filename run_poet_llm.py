@@ -30,6 +30,8 @@ def main():
     initialize_experiment(args.name, save_path, args)
 
     robot = load_robot(CURR_DIR, args.robot)
+    
+    prompt_start = "100*20 size Evolution Gym environment that is simple."
 
     config_file = os.path.join(CURR_DIR, 'config', 'terrain_cppn.cfg')
     cppn_config = neat_cppn.make_config(config_file)
@@ -38,7 +40,8 @@ def main():
     env_config = EnvrionmentEvogymConfig(
         robot,
         cppn_config,
-        LLM_env = generate_env(0),
+        prompt = prompt_start,
+        LLM_env = generate_env(prompt_start),
         env_id = args.task,
         max_width = args.width,
         first_platform = args.first_platform)
