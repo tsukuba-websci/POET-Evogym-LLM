@@ -259,11 +259,15 @@ def generate_env(prompt):
     checked_list = False
 
     while not checked_list:
+        env_list = create_env(prompt)
+        fixed_list = adjust_list(env_list)
+        checked_list = check_columns(fixed_list)
         try:
             env_list = create_env(prompt)
-            json_env = create_json_file(fixed_list)
             fixed_list = adjust_list(env_list)
             checked_list = check_columns(fixed_list)
+            json_env = create_json_file(fixed_list)
+            
         except:
             print('re generate env')
             checked_list = False
