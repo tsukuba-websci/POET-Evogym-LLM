@@ -257,8 +257,12 @@ def create_json_file(env_list):
 
 def generate_env(prompt):
     checked_list = False
-
+    count = 0
     while not checked_list:
+        count += 1
+        if count > 10:
+            print('over 10 times generated')
+            break
         try:
             env_list = create_env(prompt)
             fixed_list = adjust_list(env_list)
