@@ -182,24 +182,21 @@ def check_columns(lst):
     return True
 
 
-def process_neighbour(i, j, grid, object_cells, object_type):
-    if i < 0 or j < 0 or i >= len(grid) or j >= len(grid[0]) or grid[i][j] == "-":
+def process_neighbour(i, j, grid, object_cells, object_type, processed_cells):
+    if i < 0 or j < 0 or i >= len(grid) or j >= len(grid[0]) or grid[i][j] == "-" or processed_cells[i][j]:
         return
 
-    cell = (len(grid)-1-i)*len(grid[0]) + j  # fixed here
+    # セルを処理済みとマークする
+    processed_cells[i][j] = True
 
-    if cell in object_cells:
-        return
-
+    cell = (len(grid)-1-i)*len(grid[0]) + j
     object_cells.append(cell)
-
-    # Add the current cell's type to the object_type list
     object_type.append(grid[i][j])
 
-    process_neighbour(i+1, j, grid, object_cells, object_type)
-    process_neighbour(i-1, j, grid, object_cells, object_type)
-    process_neighbour(i, j+1, grid, object_cells, object_type)
-    process_neighbour(i, j-1, grid, object_cells, object_type)
+    process_neighbour(i+1, j, grid, object_cells, object_type, processed_cells)
+    process_neighbour(i-1, j, grid, object_cells, object_type, processed_cells)
+    process_neighbour(i, j+1, grid, object_cells, object_type, processed_cells)
+    process_neighbour(i, j-1, grid, object_cells, object_type, processed_cells)
 
 
 def create_json_file(env_list):
@@ -217,16 +214,21 @@ def create_json_file(env_list):
             if grid[i][j] == 'H' or grid[i][j] == 'S':
                 start_height = max(start_height, grid_height - i)
 
+    # 新しいグリッドを初期化 (すべてのセルがまだ処理されていないことを示す)
+    processed_cells = [[False for _ in range(grid_width)] for _ in range(grid_height)]
+
     for i in range(len(grid)):
         for j in range(len(grid[i])):
             if grid[i][j] == 'H' or grid[i][j] == 'S':
                 new_object_indices = []
                 new_object_type = []
 
-                process_neighbour(i, j, grid, new_object_indices, new_object_type)
+                # processed_cellsを渡す
+                process_neighbour(i, j, grid, new_object_indices, new_object_type, processed_cells)
 
                 # Initialize new_object_types with 'S' as 2 and 'H' as 5
                 new_object_types = [5 if t == 'H' else 2 for t in new_object_type]
+
                 # Modify the object type based on the requirements
                 s_count = 0
                 for k, t in enumerate(new_object_type):
@@ -261,19 +263,88 @@ def generate_env(prompt):
     while not checked_list:
         count += 1
         if count > 10:
-            print('over 10 times generated')
             break
         try:
             env_list = create_env(prompt)
             fixed_list = adjust_list(env_list)
-            checked_list = check_columns(fixed_list)
-            json_env = create_json_file(fixed_list)
-            
+            env_list = adjust_overlapping_boxes(fixed_list)
+            checked_list = check_columns(env_list)
+            json_env = create_json_file(env_list)
         except:
-            print('re generate env')
             checked_list = False
-
     return json_env
+
+def adjust_overlapping_boxes(grid):
+    """
+    Adjust the grid so that if bounding boxes of objects overlap, the blocks (S or H) in the overlapping 
+    area of the object with the right-side bounding box are replaced with '-'.
+    """
+    rows = len(grid)
+    cols = len(grid[0])
+
+    def is_block(r, c):
+        return grid[r][c] in {'H', 'S'}
+
+    def get_neighbors(r, c):
+        """Get valid neighboring blocks."""
+        neighbors = []
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols and is_block(nr, nc):
+                neighbors.append((nr, nc))
+        return neighbors
+
+    visited = set()
+    object_details = []
+
+    for r in range(rows):
+        for c in range(cols):
+            if is_block(r, c) and (r, c) not in visited:
+                # Start a new object
+                queue = [(r, c)]
+                visited.add((r, c))
+                min_row, min_col, max_row, max_col = r, c, r, c
+                object_blocks = set()
+
+                while queue:
+                    cr, cc = queue.pop(0)
+                    object_blocks.add((cr, cc))
+                    for nr, nc in get_neighbors(cr, cc):
+                        if (nr, nc) not in visited:
+                            visited.add((nr, nc))
+                            queue.append((nr, nc))
+                            min_row, min_col = min(min_row, nr), min(min_col, nc)
+                            max_row, max_col = max(max_row, nr), max(max_col, nc)
+
+                object_details.append(((min_row, min_col), (max_row, max_col), object_blocks))
+
+    # Sort objects by their top-left corner's x-coordinate
+    object_details.sort(key=lambda x: x[0][1])
+
+    # Function to check if two boxes overlap
+    def boxes_overlap(box1, box2):
+        (tl1, br1) = box1
+        (tl2, br2) = box2
+        return not (br1[1] < tl2[1] or br2[1] < tl1[1] or br1[0] < tl2[0] or br2[0] < tl1[0])
+
+    # Modify the grid based on overlapping bounding boxes
+    for i in range(len(object_details)):
+        for j in range(i + 1, len(object_details)):
+            box1, blocks1 = object_details[i][:2], object_details[i][2]
+            box2, blocks2 = object_details[j][:2], object_details[j][2]
+
+            if boxes_overlap(box1, box2):
+                overlap_area = set()
+                for r in range(max(box1[0][0], box2[0][0]), min(box1[1][0], box2[1][0]) + 1):
+                    for c in range(max(box1[0][1], box2[0][1]), min(box1[1][1], box2[1][1]) + 1):
+                        if (r, c) in blocks2:
+                            overlap_area.add((r, c))
+
+                # Replace overlapping blocks in the right-side box with '-'
+                for r, c in overlap_area:
+                    grid[r] = grid[r][:c] + '-' + grid[r][c + 1:]
+
+    return grid
 
 def recreate_fixed_list(json_env):
     """
