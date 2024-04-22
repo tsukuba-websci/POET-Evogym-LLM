@@ -8,7 +8,9 @@ from neat import DefaultReproduction
 # modified to incoporate constraint function
 class DefaultReproduction(DefaultReproduction):
 
-    def create_new(self, genome_type, genome_config, num_genomes, constraint_function=None):
+    def create_new(
+        self, genome_type, genome_config, num_genomes, constraint_function=None
+    ):
         new_genomes = {}
         for i in range(num_genomes):
             key = next(self.genome_indexer)
@@ -20,14 +22,16 @@ class DefaultReproduction(DefaultReproduction):
                     g = genome_type(key)
                     g.configure_new(genome_config)
 
-            setattr(g, 'parent1', -1)
-            setattr(g, 'parent2', -1)
+            setattr(g, "parent1", -1)
+            setattr(g, "parent2", -1)
             new_genomes[key] = g
             self.ancestors[key] = tuple()
 
         return new_genomes
 
-    def reproduce(self, config, species, pop_size, generation, constraint_function=None):
+    def reproduce(
+        self, config, species, pop_size, generation, constraint_function=None
+    ):
         """
         Handles creation of genomes, either from scratch or by sexual or
         asexual reproduction from parents.
@@ -54,7 +58,7 @@ class DefaultReproduction(DefaultReproduction):
         # No species left.
         if not remaining_species:
             species.species = {}
-            return {} # was []
+            return {}  # was []
 
         # Find minimum/maximum fitness across the entire population, for use in
         # species adjusted fitness computation.
@@ -70,8 +74,10 @@ class DefaultReproduction(DefaultReproduction):
             afs.adjusted_fitness = af
 
         adjusted_fitnesses = [s.adjusted_fitness for s in remaining_species]
-        avg_adjusted_fitness = mean(adjusted_fitnesses) # type: float
-        self.reporters.info("Average adjusted fitness: {:.3f}".format(avg_adjusted_fitness))
+        avg_adjusted_fitness = mean(adjusted_fitnesses)  # type: float
+        self.reporters.info(
+            "Average adjusted fitness: {:.3f}".format(avg_adjusted_fitness)
+        )
 
         # Compute the number of new members for each species in the new generation.
         previous_sizes = [len(s.members) for s in remaining_species]
@@ -80,8 +86,9 @@ class DefaultReproduction(DefaultReproduction):
         # self.reproduction_config.elitism)? That would probably produce more accurate tracking
         # of population sizes and relative fitnesses... doing. TODO: document.
         min_species_size = max(min_species_size, self.reproduction_config.elitism)
-        spawn_amounts = self.compute_spawn(adjusted_fitnesses, previous_sizes,
-                                           pop_size, min_species_size)
+        spawn_amounts = self.compute_spawn(
+            adjusted_fitnesses, previous_sizes, pop_size, min_species_size
+        )
 
         new_population = {}
         species.species = {}
@@ -101,7 +108,7 @@ class DefaultReproduction(DefaultReproduction):
 
             # Transfer elites to new generation.
             if self.reproduction_config.elitism > 0:
-                for i, m in old_members[:self.reproduction_config.elitism]:
+                for i, m in old_members[: self.reproduction_config.elitism]:
                     new_population[i] = m
                     spawn -= 1
 
@@ -109,8 +116,11 @@ class DefaultReproduction(DefaultReproduction):
                 continue
 
             # Only use the survival threshold fraction to use as parents for the next generation.
-            repro_cutoff = int(math.ceil(self.reproduction_config.survival_threshold *
-                                         len(old_members)))
+            repro_cutoff = int(
+                math.ceil(
+                    self.reproduction_config.survival_threshold * len(old_members)
+                )
+            )
             # Use at least two parents no matter what the threshold fraction result is.
             repro_cutoff = max(repro_cutoff, 2)
             old_members = old_members[:repro_cutoff]
@@ -132,13 +142,17 @@ class DefaultReproduction(DefaultReproduction):
                 child.mutate(config.genome_config)
 
                 if constraint_function is not None:
-                    while not constraint_function(child, config.genome_config, generation):
+                    while not constraint_function(
+                        child, config.genome_config, generation
+                    ):
                         child = config.genome_type(gid)
-                        child.configure_crossover(parent1, parent2, config.genome_config)
+                        child.configure_crossover(
+                            parent1, parent2, config.genome_config
+                        )
                         child.mutate(config.genome_config)
 
-                setattr(child, 'parent1', parent1_id)
-                setattr(child, 'parent2', parent2_id)
+                setattr(child, "parent1", parent1_id)
+                setattr(child, "parent2", parent2_id)
                 new_population[gid] = child
                 self.ancestors[gid] = (parent1_id, parent2_id)
 

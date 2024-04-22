@@ -3,11 +3,16 @@ import copy
 from neat import DefaultGenome
 from neat.graphs import required_for_output
 
+
 class DefaultGenome(DefaultGenome):
 
     def get_pruned_copy(self, genome_config):
-        used_node_genes, used_connection_genes = get_pruned_genes(self.nodes, {k: g for k,g in self.connections.items() if g.enabled},
-                                                                  genome_config.input_keys, genome_config.output_keys)
+        used_node_genes, used_connection_genes = get_pruned_genes(
+            self.nodes,
+            {k: g for k, g in self.connections.items() if g.enabled},
+            genome_config.input_keys,
+            genome_config.output_keys,
+        )
         new_genome = DefaultGenome(None)
         new_genome.nodes = used_node_genes
         new_genome.connections = used_connection_genes

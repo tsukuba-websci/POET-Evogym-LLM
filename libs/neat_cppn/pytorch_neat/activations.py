@@ -45,11 +45,11 @@ def relu_activation(x):
 
 
 str_to_activation = {
-    'sigmoid': sigmoid_activation,
-    'tanh': tanh_activation,
-    'abs': abs_activation,
-    'gauss': gauss_activation,
-    'identity': identity_activation,
-    'sin': sin_activation,
-    'relu': relu_activation,
+    "sigmoid": sigmoid_activation,
+    "tanh": tanh_activation,
+    "abs": abs_activation,
+    "gauss": gauss_activation,
+    "identity": identity_activation,
+    "sin": sin_activation,
+    "relu": relu_activation,
 }
