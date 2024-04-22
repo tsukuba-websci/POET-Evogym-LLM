@@ -268,3 +268,53 @@ def create_prompt(prompt):
     )
     mutated_prompt = response['choices'][0]['message']['content']
     return mutated_prompt
+
+def find_bounding_boxes(grid):
+    """
+    Find bounding boxes of connected 'H' and 'S' blocks in the grid.
+    A bounding box is represented by the coordinates of its top-left and bottom-right corners.
+    """
+    rows = len(grid)
+    cols = len(grid[0])
+
+    def is_block(r, c):
+        return grid[r][c] in {'H', 'S'}
+
+    def get_neighbors(r, c):
+        """Get valid neighboring blocks."""
+        neighbors = []
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols and is_block(nr, nc):
+                neighbors.append((nr, nc))
+        return neighbors
+
+    visited = set()
+    bounding_boxes = []
+    
+    for r in range(rows):
+        for c in range(cols):
+            if is_block(r, c) and (r, c) not in visited:
+                # Start a new object
+                queue = [(r, c)]
+                visited.add((r, c))
+                min_row, min_col, max_row, max_col = r, c, r, c
+
+                while queue:
+                    cr, cc = queue.pop(0)
+                    for nr, nc in get_neighbors(cr, cc):
+                        if (nr, nc) not in visited:
+                            visited.add((nr, nc))
+                            queue.append((nr, nc))
+                            min_row, min_col = min(min_row, nr), min(min_col, nc)
+                            max_row, max_col = max(max_row, nr), max(max_col, nc)
+
+                bounding_boxes.append(((min_row, min_col), (max_row, max_col)))
+
+    return bounding_boxes
+
+# Function to print the bounding box area from the grid
+def print_bounding_box(grid, box):
+    top_left, bottom_right = box
+    for row in range(top_left[0], bottom_right[0] + 1):
+        print(grid[row][top_left[1]:bottom_right[1] + 1])
