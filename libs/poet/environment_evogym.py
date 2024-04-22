@@ -1,13 +1,12 @@
-import os
 import copy
-from itertools import count
 import json
+import os
 import pickle
-import numpy as np
+from itertools import count
 
 import matplotlib.pyplot as plt
-
 import neat_cppn
+import numpy as np
 
 
 class EvogymTerrainDecoder(neat_cppn.BaseCPPNDecoder):

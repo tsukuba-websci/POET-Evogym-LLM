@@ -1,5 +1,5 @@
-import sys
 import os
+import sys
 
 CURR_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -7,16 +7,13 @@ LIB_DIR = os.path.join(CURR_DIR, "libs")
 sys.path.append(LIB_DIR)
 import neat_cppn
 from experiment_utils import initialize_experiment
-
-from poet.poet_algo import POET
-from poet.learner_ppo import OptimizerPPOConfig
 from poet.environment_evogym import EnvrionmentEvogymConfig
+from poet.learner_ppo import OptimizerPPOConfig
+from poet.poet_algo import POET
 
-
-from gym_utils import load_robot
 import custom_envs.parkour
-
 from arguments.evogym_poet import get_args
+from gym_utils import load_robot
 
 
 def main():

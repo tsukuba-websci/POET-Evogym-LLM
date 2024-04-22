@@ -1,25 +1,21 @@
 # this program is used to run poet on LLM envs
 
-import sys
-import os
 import json
+import os
+import sys
 
 CURR_DIR = os.path.dirname(os.path.abspath(__file__))
 LIB_DIR = os.path.join(CURR_DIR, "libs")
 sys.path.append(LIB_DIR)
 import neat_cppn
 from experiment_utils import initialize_experiment
-
-from poet.poet_algo import POET
+from poet.environment_evogym_LLM import EnvrionmentEvogymConfig, generate_env
 from poet.learner_ppo import OptimizerPPOConfig
-from poet.environment_evogym_LLM import EnvrionmentEvogymConfig
-from poet.environment_evogym_LLM import generate_env
+from poet.poet_algo import POET
 
-
-from gym_utils import load_robot
 import custom_envs.parkour
-
 from arguments.evogym_poet import get_args
+from gym_utils import load_robot
 
 with open("./LLM_envs/terrain (1).json", "r") as f:
     data = json.load(f)

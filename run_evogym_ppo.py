@@ -1,6 +1,6 @@
-import sys
-import os
 import json
+import os
+import sys
 
 CURR_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -8,13 +8,10 @@ LIB_DIR = os.path.join(CURR_DIR, "libs")
 sys.path.append(LIB_DIR)
 from experiment_utils import initialize_experiment, load_experiment
 
-
-from gym_utils import load_robot
 import custom_envs.parkour
-
-from run_ppo import run_ppo
-
 from arguments.evogym_ppo import get_args
+from gym_utils import load_robot
+from run_ppo import run_ppo
 
 
 class ppoConfig:

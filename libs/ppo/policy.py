@@ -1,13 +1,13 @@
-import numpy as np
-import torch
-from torch import nn
-
 from functools import partial
 
-from stable_baselines3.common.utils import obs_as_tensor
-from stable_baselines3.common.preprocessing import preprocess_obs
+import numpy as np
+import torch
 from stable_baselines3.common.distributions import make_proba_distribution
-from stable_baselines3.common.torch_layers import MlpExtractor, FlattenExtractor
+from stable_baselines3.common.preprocessing import preprocess_obs
+from stable_baselines3.common.torch_layers import (FlattenExtractor,
+                                                   MlpExtractor)
+from stable_baselines3.common.utils import obs_as_tensor
+from torch import nn
 
 
 def init_weights(module, gain=1):

@@ -1,6 +1,6 @@
-import os
 import csv
 import glob
+import os
 import shutil
 
 # ディレクトリppo_result内の1~5までのフォルダを取得

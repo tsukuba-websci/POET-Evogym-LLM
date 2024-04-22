@@ -1,7 +1,6 @@
 import csv
 import os
 import pickle
-import csv
 
 from neat.reporting import BaseReporter, ReporterSet
 

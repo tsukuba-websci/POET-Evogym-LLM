@@ -1,14 +1,14 @@
-import os, sys
 import copy
-from itertools import count
+import os
+import sys
 from collections import OrderedDict
+from itertools import count
+
 import numpy as np
 import torch
-
+from ppo import PPO, Policy
 
 from gym_utils import make_vec_envs
-
-from ppo import PPO, Policy
 
 
 def dummy():

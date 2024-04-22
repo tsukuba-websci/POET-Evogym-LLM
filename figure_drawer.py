@@ -1,19 +1,17 @@
+import json
 import os
 import pickle
-import json
-from gym import Env
+
+import imageio
+import matplotlib.pyplot as plt
 import numpy as np
 import torch
-
-import matplotlib.pyplot as plt
+from gym import Env
 from PIL import Image
-import imageio
+from ppo import Policy
 from pygifsicle import gifsicle
 
 from gym_utils import make_vec_envs
-
-from ppo import Policy
-
 
 RenderPaddings = {
     "Walker-v0": ((4, 4), (1, 8)),

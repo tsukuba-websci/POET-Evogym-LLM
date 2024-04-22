@@ -1,16 +1,14 @@
-import os
 import copy
-from itertools import count
 import json
+import os
 import pickle
-import numpy as np
 import random
-import openai
+from itertools import count
 
 import matplotlib.pyplot as plt
-
 import neat_cppn
-
+import numpy as np
+import openai
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 

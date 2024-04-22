@@ -1,8 +1,8 @@
 import math
 import random
 
-from neat.math_util import mean
 from neat import DefaultReproduction
+from neat.math_util import mean
 
 
 # modified to incoporate constraint function

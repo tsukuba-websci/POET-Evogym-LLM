@@ -1,8 +1,8 @@
+import multiprocessing.pool
 import os
+
 import gym
 import numpy as np
-import multiprocessing.pool
-
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
@@ -50,7 +50,7 @@ def make_vec_envs(
     return envs
 
 
-from evogym import is_connected, has_actuator, get_full_connectivity
+from evogym import get_full_connectivity, has_actuator, is_connected
 
 
 def load_robot(ROOT_DIR, robot_name, task=None):

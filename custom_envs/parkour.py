@@ -1,13 +1,11 @@
 import math
+
 import numpy as np
-
-from gym import error, spaces
-
 from evogym import EvoWorld, WorldObject
-from evogym.utils import *
-from evogym.envs.base import EvoGymBase
 from evogym.envs import BenchmarkBase
-
+from evogym.envs.base import EvoGymBase
+from evogym.utils import *
+from gym import error, spaces
 from gym.envs.registration import register
 
 register(

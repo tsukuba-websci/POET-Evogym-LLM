@@ -1,9 +1,7 @@
+import csv
+import multiprocessing as mp
 import os
 import sys
-import csv
-
-import multiprocessing as mp
-
 
 CURR_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -11,11 +9,10 @@ LIB_DIR = os.path.join(CURR_DIR, "libs")
 sys.path.append(LIB_DIR)
 from experiment_utils import load_experiment
 
-from gym_utils import load_robot
-from figure_drawer import EvogymDrawerPOET, pool_init_func
 import custom_envs.parkour
-
 from arguments.evogym_poet import get_figure_args
+from figure_drawer import EvogymDrawerPOET, pool_init_func
+from gym_utils import load_robot
 
 
 def main():

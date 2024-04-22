@@ -1,9 +1,8 @@
 import numpy as np
 import torch
-from torch.nn import functional as F
-
 # from .rollout import Rollout
 from stable_baselines3.common.buffers import RolloutBuffer
+from torch.nn import functional as F
 
 
 def update_linear_schedule(optimizer, epoch, total_num_epochs, initial_lr):

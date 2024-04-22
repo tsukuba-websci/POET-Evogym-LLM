@@ -1,2 +1,2 @@
-from .ppo import PPO
 from .policy import Policy
+from .ppo import PPO

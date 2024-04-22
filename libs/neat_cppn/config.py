@@ -1,5 +1,6 @@
 import neat
 from neat.config import *
+
 from .genome import DefaultGenome
 from .reproduction import DefaultReproduction
 

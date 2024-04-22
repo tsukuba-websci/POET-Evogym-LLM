@@ -1,12 +1,11 @@
-import os
 import csv
-import time
-
-import multiprocessing.pool
 import multiprocessing as mp
-
+import multiprocessing.pool
+import os
 import random
+import time
 from itertools import count
+
 import numpy as np
 
 from .niche import Niche

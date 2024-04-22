@@ -1,13 +1,13 @@
-import os
 import csv
+import os
 import time
+
 import numpy as np
 import torch
+from ppo import PPO, Policy
 
-from ppo import Policy, PPO
-
-from gym_utils import make_vec_envs
 import ppo_config as default_config
+from gym_utils import make_vec_envs
 
 
 def evaluate(policy, envs, num_eval=1, deterministic=False):

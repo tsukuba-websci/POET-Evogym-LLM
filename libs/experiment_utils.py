@@ -1,6 +1,6 @@
+import json
 import os
 import shutil
-import json
 
 
 def initialize_experiment(experiment_name, save_path, args):
