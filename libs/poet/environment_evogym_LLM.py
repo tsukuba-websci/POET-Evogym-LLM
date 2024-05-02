@@ -460,7 +460,7 @@ def create_prompt(prompt):
             },
             {
                 "role": "assistant",
-                "content": "00*20 size Evolution Gym environment that is a little difficult.",
+                "content": "100*20 size Evolution Gym environment that is a little difficult.",
             },
             {"role": "user", "content": prompt},
         ],
