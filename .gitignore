@@ -1,0 +1,6 @@
+# Compiled bytecode
+*.pyc
+
+# venv
+venv/
+.venv/
