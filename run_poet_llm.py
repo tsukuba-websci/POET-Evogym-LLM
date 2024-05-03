@@ -17,9 +17,6 @@ import custom_envs.parkour
 from arguments.evogym_poet import get_args
 from gym_utils import load_robot
 
-with open("./LLM_envs/terrain (1).json", "r") as f:
-    data = json.load(f)
-
 
 def main():
     args = get_args()
