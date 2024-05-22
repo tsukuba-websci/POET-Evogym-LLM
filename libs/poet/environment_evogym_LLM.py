@@ -211,8 +211,6 @@ def process_neighbour(i, j, grid, object_cells, object_type, processed_cells):
     object_cells.append(cell)
     object_type.append(grid[i][j])
 
-    process_neighbour(i + 1, j, grid, object_cells, object_type, processed_cells)
-    process_neighbour(i - 1, j, grid, object_cells, object_type, processed_cells)
     process_neighbour(i, j + 1, grid, object_cells, object_type, processed_cells)
     process_neighbour(i, j - 1, grid, object_cells, object_type, processed_cells)
 
