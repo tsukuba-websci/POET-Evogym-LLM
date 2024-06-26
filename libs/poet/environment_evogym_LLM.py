@@ -156,8 +156,7 @@ def create_env(prompt):
         ],
     )
     env_list = eval(response["choices"][0]["message"]["content"])
-    env_list_fixed = adjust_overlapping_boxes(env_list)
-    return env_list_fixed
+    return env_list
 
 
 def adjust_list(lst):
