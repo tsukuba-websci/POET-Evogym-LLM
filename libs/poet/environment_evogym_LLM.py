@@ -299,14 +299,10 @@ def generate_env(prompt):
         count += 1
         if count > 10:
             break
-        try:
-            env_list = create_env(prompt)
-            fixed_list = adjust_list(env_list)
-            env_list = adjust_overlapping_boxes(fixed_list)
-            checked_list = check_columns(env_list)
-            json_env = create_json_file(env_list)
-        except:
-            checked_list = False
+        env_list = create_env(prompt)
+        fixed_list = adjust_list(env_list)
+        checked_list = check_columns(fixed_list)
+        json_env = create_json_file(fixed_list)
     return json_env
 
 
