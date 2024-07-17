@@ -4,8 +4,7 @@ import numpy as np
 import torch
 from stable_baselines3.common.distributions import make_proba_distribution
 from stable_baselines3.common.preprocessing import preprocess_obs
-from stable_baselines3.common.torch_layers import (FlattenExtractor,
-                                                   MlpExtractor)
+from stable_baselines3.common.torch_layers import FlattenExtractor, MlpExtractor
 from stable_baselines3.common.utils import obs_as_tensor
 from torch import nn
 
