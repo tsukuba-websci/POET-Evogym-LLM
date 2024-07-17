@@ -42,7 +42,7 @@ def main():
 
     args = get_args()
 
-    expt_path = os.path.join(CURR_DIR, "out_ppo", "evogym_poet", args.name)
+    expt_path = os.path.join(CURR_DIR, "out", "evogym_poet", args.name)
     expt_args = load_experiment(expt_path)
     expt_niche = os.path.join(expt_path, "niche")
     niches = [
@@ -52,7 +52,7 @@ def main():
     ]
     diff_niche = sorted(niches)
 
-    dir_path = "./out/evogym_poet/default/niche"
+    dir_path = "./out_ppo/evogym_poet/default/niche"
     dire = [
         name
         for name in os.listdir(dir_path)
