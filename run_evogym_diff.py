@@ -59,10 +59,10 @@ def main():
         if os.path.isdir(os.path.join(dir_path, name))
     ]
     directories = sorted(dire)
-    if args.key + 10 > len(directories):
+    if args.key + 5 > len(directories):
         end = len(directories)
     else:
-        end = args.key + 10
+        end = args.key + 5
 
     for k in range(args.key, end):
         model_path = os.path.join(dir_path, directories[k], "core", "best.pt")
